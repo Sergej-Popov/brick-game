@@ -15,6 +15,19 @@ export class KeyBindService implements KeyBind {
     [KeyBindSlot.Sound]: 's',
     [KeyBindSlot.Reset]: 'r',
   };
+
+  private mapSlot2Buttons: Record<KeyBindSlot, KeyBindButtonBinded> = {
+    [KeyBindSlot.Top]: 'filter5_di_1_2',
+    [KeyBindSlot.Right]: 'filter3_di_1_2',
+    [KeyBindSlot.Down]: 'filter2_di_1_2',
+    [KeyBindSlot.Left]: 'filter4_di_1_2',
+    [KeyBindSlot.Rotate]: 'filter1_di_1_2',
+    [KeyBindSlot.OnOff]: 'filter6_di_1_2',
+    [KeyBindSlot.StartPause]: 'filter7_di_1_2',
+    [KeyBindSlot.Sound]: 'filter9_di_1_2',
+    [KeyBindSlot.Reset]: 'filter8_di_1_2',
+  };
+
   private mapSlot2Handler: Record<KeyBindSlot, Array<KeyBindHandler>> = {
     [KeyBindSlot.Top]: [],
     [KeyBindSlot.Down]: [],
@@ -36,6 +49,14 @@ export class KeyBindService implements KeyBind {
         }
       });
     };
+
+    const slotButtonPairs = Object.entries(this.mapSlot2Buttons) as Array<[KeyBindSlot, string]>;
+    slotButtonPairs.forEach(([slot, boundButton]) => {
+      const gamepadButton = document.querySelector(`[filter="url(#${boundButton})"]`);
+      gamepadButton?.addEventListener('click', () => {
+        this.mapSlot2Handler[slot].forEach((handler) => handler());
+      });
+    });
   }
 
   public bindHandler(button: KeyBindSlot, handler: KeyBindHandler) {

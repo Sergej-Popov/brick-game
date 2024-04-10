@@ -55,6 +55,7 @@ export class KeyBindService implements KeyBind {
       const gamepadButton = document.querySelector(`[filter="url(#${boundButton})"]`);
       gamepadButton?.addEventListener('click', () => {
         this.mapSlot2Handler[slot].forEach((handler) => handler());
+        navigator.vibrate?.(100);
       });
     });
   }

@@ -3,6 +3,8 @@ import { inject, singleton } from 'tsyringe';
 import {
   Display,
   DisplayMatrix20x10,
+  DisplayPixel,
+  DisplayRow,
   Game,
   KeyBind,
   KeyBindSlot
@@ -15,28 +17,7 @@ import { TetrisDirection } from './types';
 @singleton()
 export class Tetris implements Game {
   private currentFigure: TetrisFigure = tetrisFiguresCooked[3]();
-  private displayMatrix: DisplayMatrix20x10 = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  ] as unknown as DisplayMatrix20x10;
+  private displayMatrix: DisplayMatrix20x10 = Array(20).fill(0).map(() => Array<DisplayPixel>(10).fill(0)) as DisplayMatrix20x10;
   private readonly figures: Array<() => TetrisFigure> = tetrisFiguresCooked;
   private pause: boolean = false;
   private pausePromiseResolver: ((value: (PromiseLike<unknown> | unknown)) => void) | null = null;
@@ -50,7 +31,7 @@ export class Tetris implements Game {
     this.keyBindService.bindHandler(KeyBindSlot.Left, this.handleFigureMove(TetrisDirection.Left));
     this.keyBindService.bindHandler(KeyBindSlot.Right, this.handleFigureMove(TetrisDirection.Right));
     this.keyBindService.bindHandler(KeyBindSlot.Down, this.handleFigureMove(TetrisDirection.Down));
-    this.keyBindService.bindHandler(KeyBindSlot.Top, this.handleFigureRotate);
+    this.keyBindService.bindHandler(KeyBindSlot.Rotate, this.handleFigureRotate);
   }
 
   public doPause() {

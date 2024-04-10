@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "start": "webpack serve --open",
-    "build-prod": "webpack --env mode='production' --progress",
+    "build-prod": "webpack --env mode=production --progress",
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clear-dist": "rm -rf ./dist",
@@ -53,10 +53,12 @@
   },
   "dependencies": {
     "clsx": "^1.1.1",
+    "copy-webpack-plugin": "^12.0.2",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "reflect-metadata": "^0.1.13",
-    "tsyringe": "^4.6.0"
+    "tsyringe": "^4.6.0",
+    "workbox-webpack-plugin": "^7.0.0"
   }
 }

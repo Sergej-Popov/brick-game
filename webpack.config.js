@@ -1,6 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env) => ({
   mode: env.mode ?? 'development',
@@ -12,12 +14,42 @@ module.exports = (env) => ({
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Brick game 9999 in 1',
-      template: 'public/index.html'
+      title: '3Brick game 9999 in 1',
+      template: 'public/index.html',
+      favicon: 'public/favicon.ico'
     }),
     new webpack.SourceMapDevToolPlugin({
       filename: '[name].[contenthash].map'
-    })
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'public/manifest.json', to: 'manifest.json' },
+        { from: 'public/clover.svg', to: 'clover.svg' }
+      ]
+    }),
+    new WorkboxWebpackPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
+      // Define runtime caching rules.
+      runtimeCaching: [{
+        urlPattern: new RegExp('\.html$'),
+        handler: 'NetworkFirst'
+      }, {
+        // Cache CSS and JS files
+        urlPattern: new RegExp('\.(?:js|css)$'),
+        handler: 'StaleWhileRevalidate',
+      }, {
+        // Caching for other assets
+        urlPattern: new RegExp('\.(?:png|jpg|jpeg|svg|gif)$'),
+        handler: 'CacheFirst',
+        options: {
+          cacheName: 'images',
+          expiration: {
+            maxEntries: 10,
+          },
+        },
+      }],
+    }),
   ],
   output: {
     filename: '[name].[contenthash].js',
